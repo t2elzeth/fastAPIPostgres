@@ -1,32 +1,15 @@
-import databases
-import sqlalchemy
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-DATABASE_URL = "postgresql://postgres:postgres@localhost/postgres"
-
-metadata = sqlalchemy.MetaData()
-
-database = databases.Database(DATABASE_URL)
-
-users = sqlalchemy.Table(
-    "authorization_user",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("email", sqlalchemy.String),
-    sqlalchemy.Column("is_superuser", sqlalchemy.Boolean)
-)
-
-engine = sqlalchemy.create_engine(DATABASE_URL)
-
-metadata.create_all(engine)
+from src.database import database, users, metadata, engine
 
 app = FastAPI()
 
 
 @app.on_event("startup")
 async def connect():
+    metadata.create_all(engine)
     await database.connect()
 
 
