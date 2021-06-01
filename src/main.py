@@ -1,8 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
-from pydantic import BaseModel
 
 from src.database import database, users, metadata, engine
+from src.schemas import User
 
 app = FastAPI()
 
@@ -16,12 +16,6 @@ async def connect():
 @app.on_event("shutdown")
 async def shutdown():
     await database.disconnect()
-
-
-class User(BaseModel):
-    id: int
-    email: str
-    is_superuser: bool
 
 
 @app.get('/users/{pk}', response_model=User)
