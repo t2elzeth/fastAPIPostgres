@@ -22,10 +22,11 @@ async def shutdown():
 
 @app.post('/users', response_model=schemas.ShowUser)
 async def create_user(payload: schemas.CreateUser):
-    query = users.select().where(users.c.email == payload.email)
-    user = await database.fetch_one(query)
+    query = users.select().where(users.c.email == payload.email).with_only_columns([users.c.email])
+    print(query)
+    user = await database.execute(query)
     if user is not None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User exists')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User exists")
 
     hashed_password = hashing.bcrypt(payload.password)
     query = users.insert().values(
