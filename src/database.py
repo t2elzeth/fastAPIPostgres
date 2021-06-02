@@ -20,7 +20,8 @@ users = sa.Table(
     sa.Column('password', sa.String),
     sa.Column('is_active', sa.Boolean),
     sa.Column('is_staff', sa.Boolean),
-    sa.Column('is_superuser', sa.Boolean)
+    sa.Column('is_superuser', sa.Boolean),
+    sa.Column('last_active', sa.DateTime)
 )
 
 blogs = sa.Table(
