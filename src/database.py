@@ -4,7 +4,7 @@ import sqlalchemy as sa
 DATABASE_URL = "postgresql://postgres:postgres@localhost/postgres"
 
 metadata = sa.MetaData()
-sa.select
+
 database = databases.Database(DATABASE_URL)
 
 engine = sa.create_engine(DATABASE_URL)

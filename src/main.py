@@ -23,8 +23,7 @@ async def shutdown():
 @app.post('/users', response_model=schemas.ShowUser)
 async def create_user(payload: schemas.CreateUser):
     query = users.select().where(users.c.email == payload.email).with_only_columns([users.c.email])
-    print(query)
-    user = await database.execute(query)
+    user = await database.fetch_one(query)
     if user is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User exists")
 
@@ -36,7 +35,9 @@ async def create_user(payload: schemas.CreateUser):
     )
 
     record_id = await database.execute(query)
-    query = users.select().where(users.c.id == record_id)
+    query = users.select().where(users.c.id == record_id).with_only_columns(
+        [users.c.id, users.c.first_name, users.c.last_name, users.c.email]
+    )
     return await database.fetch_one(query)
 
 
