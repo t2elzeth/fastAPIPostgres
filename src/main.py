@@ -1,8 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
 
+from src import schemas, hashing
 from src.database import database, users, metadata, engine
-from src.schemas import User
 
 app = FastAPI()
 
@@ -18,7 +18,23 @@ async def shutdown():
     await database.disconnect()
 
 
-@app.get('/users/{pk}', response_model=User)
+@app.post('/users', response_model=schemas.ShowUser)
+async def create_user(payload: schemas.CreateUser):
+    hashed_password = hashing.bcrypt(payload.password)
+    query = users.insert().values(
+        email=payload.email,
+        password=hashed_password,
+    )
+    print("This is a query", query)
+
+    record_id = await database.execute(query)
+
+    print("this is record id", record_id)
+    query = users.select().where(users.c.id == record_id)
+    return await database.fetch_one(query)
+
+
+@app.get('/users/{pk}', response_model=schemas.ShowUser)
 async def get_one(pk: int):
     query = users.select().where(users.c.id == pk)
     user = await database.fetch_one(query)

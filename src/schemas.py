@@ -1,7 +1,13 @@
 from pydantic import BaseModel
 
 
-class User(BaseModel):
-    id: int
+class CreateUser(BaseModel):
     email: str
-    is_superuser: bool
+    password: str
+
+
+class ShowUser(BaseModel):
+    id: int
+    first_name: str = None
+    last_name: str = None
+    email: str
