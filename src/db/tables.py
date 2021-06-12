@@ -1,15 +1,7 @@
-import databases
 import sqlalchemy as sa
 
-DATABASE_URL = "postgresql://postgres:postgres@localhost/postgres"
+from .init_db import metadata
 
-metadata = sa.MetaData()
-
-database = databases.Database(DATABASE_URL)
-
-engine = sa.create_engine(DATABASE_URL)
-
-# Tables
 users = sa.Table(
     "authorization_user",
     metadata,

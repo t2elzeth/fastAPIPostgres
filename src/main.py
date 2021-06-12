@@ -3,15 +3,20 @@ import datetime
 import uvicorn
 from fastapi import FastAPI, HTTPException, status
 
-from src import schemas, hashing
-from src.database import database, users, metadata, engine
+from src.db import (
+    schemas,
+    hashing,
+    database,
+    create_all
+)
+from src.db.tables import users
 
 app = FastAPI()
 
 
 @app.on_event("startup")
 async def connect():
-    metadata.create_all(engine)
+    create_all()
     await database.connect()
 
 
