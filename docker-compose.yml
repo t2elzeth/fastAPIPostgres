@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  db:
+    image: "postgres:13"
+    container_name: ${PROJECT_NAME}PostgresDB
+    environment:
+      - POSTGRES_USER=t2elzeth
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
+      - POSTGRES_PORT=5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+    name: ${PROJECT_NAME}PostgresData
