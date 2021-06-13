@@ -3,12 +3,7 @@ import datetime
 import uvicorn
 from fastapi import FastAPI, HTTPException, status
 
-from src.db import (
-    schemas,
-    hashing,
-    database,
-    create_all
-)
+from src.db import schemas, hashing, database, create_all
 from src.db.tables import users
 
 app = FastAPI()
@@ -25,36 +20,46 @@ async def shutdown():
     await database.disconnect()
 
 
-@app.post('/users', response_model=schemas.ShowUser)
+@app.post("/users", response_model=schemas.ShowUser)
 async def create_user(payload: schemas.CreateUser):
-    query = users.select().where(users.c.email == payload.email).with_only_columns([users.c.email])
+    query = (
+        users.select()
+        .where(users.c.email == payload.email)
+        .with_only_columns([users.c.email])
+    )
     user = await database.fetch_one(query)
     if user is not None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User exists")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="User exists"
+        )
 
     hashed_password = hashing.bcrypt(payload.password)
     query = users.insert().values(
         email=payload.email,
         password=hashed_password,
-        last_active=datetime.datetime.utcnow()
+        last_active=datetime.datetime.utcnow(),
     )
 
     record_id = await database.execute(query)
-    query = users.select().where(users.c.id == record_id).with_only_columns(
-        [users.c.id, users.c.first_name, users.c.last_name, users.c.email]
+    query = (
+        users.select()
+        .where(users.c.id == record_id)
+        .with_only_columns(
+            [users.c.id, users.c.first_name, users.c.last_name, users.c.email]
+        )
     )
     return await database.fetch_one(query)
 
 
-@app.get('/users/{pk}', response_model=schemas.ShowUser)
+@app.get("/users/{pk}", response_model=schemas.ShowUser)
 async def get_one(pk: int):
     query = users.select().where(users.c.id == pk)
     user = await database.fetch_one(query)
     return {**user}
 
 
-if __name__ == '__main__':
-    uvicorn.run('main:app', reload=True, use_colors=True)
+if __name__ == "__main__":
+    uvicorn.run("main:app", reload=True, use_colors=True)
 
 # @app.post('/register/', response_model=Register)
 # async def create(r: RegisterIn = Depends()):
