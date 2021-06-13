@@ -1,0 +1,7 @@
+[tool.black]
+exclude = "env/"
+
+[tool.isort]
+profile="black"
+src_paths="src"
+skip_gitignore="true"
