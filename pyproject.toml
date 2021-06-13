@@ -5,6 +5,7 @@ exclude = "env/"
 profile="black"
 src_paths="src"
 skip_gitignore="true"
+
 [tool.poetry]
 name = "fastapipostgres"
 version = "0.1.0"
