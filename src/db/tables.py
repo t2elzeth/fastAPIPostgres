@@ -1,4 +1,3 @@
-
 import sqlalchemy as sa
 
 from .init_db import metadata
