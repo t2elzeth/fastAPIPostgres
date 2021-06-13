@@ -1,4 +1,4 @@
-from .init_db import metadata, engine
+from .init_db import engine, metadata
 
 
 def create_all():

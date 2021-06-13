@@ -3,7 +3,7 @@ import datetime
 import uvicorn
 from fastapi import FastAPI, HTTPException, status
 
-from src.db import schemas, hashing, database, create_all
+from src.db import create_all, database, hashing, schemas
 from src.db.tables import users
 
 app = FastAPI()
